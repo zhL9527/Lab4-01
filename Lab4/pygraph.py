@@ -1,96 +1,100 @@
-from typing import Tuple, Union, Iterable
-Node = Union[str, int]
-Edge = Tuple[Node, Node]
+from collections import defaultdict
+from typing import List, Tuple, Set, Dict, Optional
 
 
+class Graph:
+    def __init__(self, edges: List[Tuple] = [], directed: bool = True):
+        self.directed = directed
+        self.adjacency: Dict = defaultdict(dict)
 
-class Graph(object):
-    """Graph data structure, undirected by default."""
-    def __init__(self, edges: Iterable[Edge] = [], directed: bool = False):
-        self._directed = directed
-        self._adjacency: Dict[Node, Set[Node]] = {}
-        for node1, node2 in edges:
-            self.add_edge((node1, node2))
+        # 初始化所有节点（确保孤立节点也被添加）
+        nodes = set()
+        for u, v in edges:
+            nodes.update([u, v])
+        for node in nodes:
+            self.adjacency[node] = {"in": set(), "out": set()}
 
+        # 添加边
+        for u, v in edges:
+            self._add_edge(u, v)
 
-def has_node(self, node: Node):
-            """Whether a node is in graph"""
-            return node in self._adjacency
-    def has_edge(self, edge: Edge):
-        node1, node2 = edge
-        if not (self.has_node(node1) and self.has_node(node2)):
+    def has_node(self, node) -> bool:
+        return node in self.adjacency
+
+    def has_edge(self, edge: Tuple) -> bool:
+        u, v = edge
+        if not self.has_node(u) or not self.has_node(v):
             return False
+        return v in self.adjacency[u]["out"]
 
-        return node2 in self._adjacency[node1] or (
-                not self._directed and node1 in self._adjacency[node2]
-        )
+    def add_node(self, node):
+        if not self.has_node(node):
+            self.adjacency[node] = {"in": set(), "out": set()}
 
+    def add_edge(self, edge: Tuple):
+        u, v = edge
+        # 确保节点存在
+        if not self.has_node(u):
+            self.add_node(u)
+        if not self.has_node(v):
+            self.add_node(v)
+        self._add_edge(u, v)
 
+    def _add_edge(self, u, v):
+        # 添加有向边
+        self.adjacency[u]["out"].add(v)
+        self.adjacency[v]["in"].add(u)
 
-     """Whether an edge is in graph"""
+        # 如果是无向图，添加反向边
+        if not self.directed:
+            self.adjacency[v]["out"].add(u)
+            self.adjacency[u]["in"].add(v)
 
-    def add_node(self, node: Node):
-       """Add a node"""
-       if node not in self._adjacency:
-           self._adjacency[node] = set()
+    def remove_node(self, node):
+        if not self.has_node(node):
+            raise ValueError(f"Node {node} not in graph")
 
+        # 删除所有相关的入边
+        for neighbor in list(self.adjacency[node]["in"]):
+            self.adjacency[neighbor]["out"].discard(node)
+            if not self.directed:
+                self.adjacency[neighbor]["in"].discard(node)
 
+        # 删除所有相关的出边
+        for neighbor in list(self.adjacency[node]["out"]):
+            self.adjacency[neighbor]["in"].discard(node)
+            if not self.directed:
+                self.adjacency[neighbor]["out"].discard(node)
 
-    def add_edge(self, edge: Edge):
-        node1, node2 = edge
-        self.add_node(node1)
-        self.add_node(node2)
-        self._adjacency[node1].add(node2)
-        if not self._directed:  # 无向图需对称添加
-            self._adjacency[node2].add(node1)
+        # 删除节点本身
+        del self.adjacency[node]
 
-        """Add an edge (node1, node2). For directed graph, node1 -> node2"""
+    def remove_edge(self, edge: Tuple):
+        u, v = edge
+        if not self.has_edge(edge):
+            raise ValueError(f"Edge {edge} not in graph")
 
-    def remove_node(self, node: Node):
-     """Remove all references to node"""
-     if node in self._adjacency:
-         del self._adjacency[node]
-         # 遍历其他节点的邻接表，移除对该节点的引用
-     for adjacent in self._adjacency.values():
-         if node in adjacent:
-             adjacent.remove(node)
+        # 删除有向边
+        self.adjacency[u]["out"].discard(v)
+        self.adjacency[v]["in"].discard(u)
 
+        # 如果是无向图，删除反向边
+        if not self.directed:
+            self.adjacency[v]["out"].discard(u)
+            self.adjacency[u]["in"].discard(v)
 
-    def remove_edge(self, edge: Edge):
-        node1, node2 = edge
-        if node1 in self._adjacency and node2 in self._adjacency[node1]:
-            self._adjacency[node1].remove(node2)
-        # 无向图需同步删除反向边
-        if not self._directed and node2 in self._adjacency and node1 in self._adjacency[node2]:
-            self._adjacency[node2].remove(node1)
+    def indegree(self, node) -> int:
+        if not self.has_node(node):
+            raise ValueError(f"Node {node} not in graph")
+        return len(self.adjacency[node]["in"])
 
-        """Remove an edge from graph"""
-           r
-    def indegree(self, node: Node) -> int:
-      """Compute indegree for a node"""
-      if not self.has_node(node):
-          return 0
-      if not self._directed:  # 无向图的入度=出度=度数
-          return len(self._adjacency[node])
-          # 有向图：统计有多少边指向该节点
-      return sum(1 for adjacent in self._adjacency.values() if node in adjacent)
+    def outdegree(self, node) -> int:
+        if not self.has_node(node):
+            raise ValueError(f"Node {node} not in graph")
+        return len(self.adjacency[node]["out"])
 
-
-    def outdegree(self, node: Node) -> int:
-        return len(self._adjacency[node]) if self.has_node(node) else 0
-
-        """Compute outdegree for a node"""
-
-        
     def __str__(self):
-        edges = []
-        for node, neighbors in self._adjacency.items():
-            for neighbor in neighbors:
-                if self._directed or (neighbor, node) not in edges:  # 避免无向图重复打印
-                    edge_str = f"{node} -> {neighbor}" if self._directed else f"{node} -- {neighbor}"
-                    edges.append(edge_str)
-        return "\n".join(edges) if edges else "空图"
+        return f"Graph(directed={self.directed}, adjacency={dict(self.adjacency)})"
 
     def __repr__(self):
-        return f"Graph(有向={self._directed}, 邻接表={self._adjacency})"
-
+        return str(self)
