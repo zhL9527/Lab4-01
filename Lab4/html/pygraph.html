@@ -59,7 +59,6 @@ class Graph:
 
     def add_edge(self, edge: Tuple):
         u, v = edge
-
         if not self.has_node(u):
             self.add_node(u)
         if not self.has_node(v):
@@ -67,7 +66,6 @@ class Graph:
         self._add_edge(u, v)
 
     def _add_edge(self, u, v):
-
         self.adjacency[u][&#34;out&#34;].add(v)
         self.adjacency[v][&#34;in&#34;].add(u)
 
@@ -150,7 +148,6 @@ class Graph:
         for node in nodes:
             self.adjacency[node] = {&#34;in&#34;: set(), &#34;out&#34;: set()}
 
-
         for u, v in edges:
             self._add_edge(u, v)
 
@@ -169,7 +166,6 @@ class Graph:
 
     def add_edge(self, edge: Tuple):
         u, v = edge
-
         if not self.has_node(u):
             self.add_node(u)
         if not self.has_node(v):
@@ -177,7 +173,6 @@ class Graph:
         self._add_edge(u, v)
 
     def _add_edge(self, u, v):
-
         self.adjacency[u][&#34;out&#34;].add(v)
         self.adjacency[v][&#34;in&#34;].add(u)
 
@@ -194,7 +189,6 @@ class Graph:
             if not self.directed:
                 self.adjacency[neighbor][&#34;in&#34;].discard(node)
 
-
         for neighbor in list(self.adjacency[node][&#34;out&#34;]):
             self.adjacency[neighbor][&#34;in&#34;].discard(node)
             if not self.directed:
@@ -206,7 +200,6 @@ class Graph:
         u, v = edge
         if not self.has_edge(edge):
             raise ValueError(f&#34;Edge {edge} not in graph&#34;)
-
 
         self.adjacency[u][&#34;out&#34;].discard(v)
         self.adjacency[v][&#34;in&#34;].discard(u)
@@ -244,7 +237,6 @@ class Graph:
 </summary>
 <pre><code class="python">def add_edge(self, edge: Tuple):
     u, v = edge
-
     if not self.has_node(u):
         self.add_node(u)
     if not self.has_node(v):
@@ -339,10 +331,8 @@ class Graph:
     if not self.has_edge(edge):
         raise ValueError(f&#34;Edge {edge} not in graph&#34;)
 
-
     self.adjacency[u][&#34;out&#34;].discard(v)
     self.adjacency[v][&#34;in&#34;].discard(u)
-
 
     if not self.directed:
         self.adjacency[v][&#34;out&#34;].discard(u)
@@ -362,7 +352,6 @@ class Graph:
     if not self.has_node(node):
         raise ValueError(f&#34;Node {node} not in graph&#34;)
 
-
     for neighbor in list(self.adjacency[node][&#34;in&#34;]):
         self.adjacency[neighbor][&#34;out&#34;].discard(node)
         if not self.directed:
@@ -372,7 +361,6 @@ class Graph:
         self.adjacency[neighbor][&#34;in&#34;].discard(node)
         if not self.directed:
             self.adjacency[neighbor][&#34;out&#34;].discard(node)
-
 
     del self.adjacency[node]</code></pre>
 </details>
