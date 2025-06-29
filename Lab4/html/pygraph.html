@@ -35,14 +35,12 @@ class Graph:
         self.directed = directed
         self.adjacency: Dict = defaultdict(dict)
 
-        # 初始化所有节点（确保孤立节点也被添加）
         nodes = set()
         for u, v in edges:
             nodes.update([u, v])
         for node in nodes:
             self.adjacency[node] = {&#34;in&#34;: set(), &#34;out&#34;: set()}
 
-        # 添加边
         for u, v in edges:
             self._add_edge(u, v)
 
@@ -61,7 +59,7 @@ class Graph:
 
     def add_edge(self, edge: Tuple):
         u, v = edge
-        # 确保节点存在
+
         if not self.has_node(u):
             self.add_node(u)
         if not self.has_node(v):
@@ -69,11 +67,10 @@ class Graph:
         self._add_edge(u, v)
 
     def _add_edge(self, u, v):
-        # 添加有向边
+
         self.adjacency[u][&#34;out&#34;].add(v)
         self.adjacency[v][&#34;in&#34;].add(u)
 
-        # 如果是无向图，添加反向边
         if not self.directed:
             self.adjacency[v][&#34;out&#34;].add(u)
             self.adjacency[u][&#34;in&#34;].add(v)
@@ -82,19 +79,16 @@ class Graph:
         if not self.has_node(node):
             raise ValueError(f&#34;Node {node} not in graph&#34;)
 
-        # 删除所有相关的入边
         for neighbor in list(self.adjacency[node][&#34;in&#34;]):
             self.adjacency[neighbor][&#34;out&#34;].discard(node)
             if not self.directed:
                 self.adjacency[neighbor][&#34;in&#34;].discard(node)
 
-        # 删除所有相关的出边
         for neighbor in list(self.adjacency[node][&#34;out&#34;]):
             self.adjacency[neighbor][&#34;in&#34;].discard(node)
             if not self.directed:
                 self.adjacency[neighbor][&#34;out&#34;].discard(node)
 
-        # 删除节点本身
         del self.adjacency[node]
 
     def remove_edge(self, edge: Tuple):
@@ -102,11 +96,9 @@ class Graph:
         if not self.has_edge(edge):
             raise ValueError(f&#34;Edge {edge} not in graph&#34;)
 
-        # 删除有向边
         self.adjacency[u][&#34;out&#34;].discard(v)
         self.adjacency[v][&#34;in&#34;].discard(u)
 
-        # 如果是无向图，删除反向边
         if not self.directed:
             self.adjacency[v][&#34;out&#34;].discard(u)
             self.adjacency[u][&#34;in&#34;].discard(v)
@@ -152,14 +144,13 @@ class Graph:
         self.directed = directed
         self.adjacency: Dict = defaultdict(dict)
 
-        # 初始化所有节点（确保孤立节点也被添加）
         nodes = set()
         for u, v in edges:
             nodes.update([u, v])
         for node in nodes:
             self.adjacency[node] = {&#34;in&#34;: set(), &#34;out&#34;: set()}
 
-        # 添加边
+
         for u, v in edges:
             self._add_edge(u, v)
 
@@ -178,7 +169,7 @@ class Graph:
 
     def add_edge(self, edge: Tuple):
         u, v = edge
-        # 确保节点存在
+
         if not self.has_node(u):
             self.add_node(u)
         if not self.has_node(v):
@@ -186,11 +177,10 @@ class Graph:
         self._add_edge(u, v)
 
     def _add_edge(self, u, v):
-        # 添加有向边
+
         self.adjacency[u][&#34;out&#34;].add(v)
         self.adjacency[v][&#34;in&#34;].add(u)
 
-        # 如果是无向图，添加反向边
         if not self.directed:
             self.adjacency[v][&#34;out&#34;].add(u)
             self.adjacency[u][&#34;in&#34;].add(v)
@@ -199,19 +189,17 @@ class Graph:
         if not self.has_node(node):
             raise ValueError(f&#34;Node {node} not in graph&#34;)
 
-        # 删除所有相关的入边
         for neighbor in list(self.adjacency[node][&#34;in&#34;]):
             self.adjacency[neighbor][&#34;out&#34;].discard(node)
             if not self.directed:
                 self.adjacency[neighbor][&#34;in&#34;].discard(node)
 
-        # 删除所有相关的出边
+
         for neighbor in list(self.adjacency[node][&#34;out&#34;]):
             self.adjacency[neighbor][&#34;in&#34;].discard(node)
             if not self.directed:
                 self.adjacency[neighbor][&#34;out&#34;].discard(node)
 
-        # 删除节点本身
         del self.adjacency[node]
 
     def remove_edge(self, edge: Tuple):
@@ -219,11 +207,10 @@ class Graph:
         if not self.has_edge(edge):
             raise ValueError(f&#34;Edge {edge} not in graph&#34;)
 
-        # 删除有向边
+
         self.adjacency[u][&#34;out&#34;].discard(v)
         self.adjacency[v][&#34;in&#34;].discard(u)
 
-        # 如果是无向图，删除反向边
         if not self.directed:
             self.adjacency[v][&#34;out&#34;].discard(u)
             self.adjacency[u][&#34;in&#34;].discard(v)
@@ -257,7 +244,7 @@ class Graph:
 </summary>
 <pre><code class="python">def add_edge(self, edge: Tuple):
     u, v = edge
-    # 确保节点存在
+
     if not self.has_node(u):
         self.add_node(u)
     if not self.has_node(v):
@@ -352,11 +339,11 @@ class Graph:
     if not self.has_edge(edge):
         raise ValueError(f&#34;Edge {edge} not in graph&#34;)
 
-    # 删除有向边
+
     self.adjacency[u][&#34;out&#34;].discard(v)
     self.adjacency[v][&#34;in&#34;].discard(u)
 
-    # 如果是无向图，删除反向边
+
     if not self.directed:
         self.adjacency[v][&#34;out&#34;].discard(u)
         self.adjacency[u][&#34;in&#34;].discard(v)</code></pre>
@@ -375,19 +362,18 @@ class Graph:
     if not self.has_node(node):
         raise ValueError(f&#34;Node {node} not in graph&#34;)
 
-    # 删除所有相关的入边
+
     for neighbor in list(self.adjacency[node][&#34;in&#34;]):
         self.adjacency[neighbor][&#34;out&#34;].discard(node)
         if not self.directed:
             self.adjacency[neighbor][&#34;in&#34;].discard(node)
 
-    # 删除所有相关的出边
     for neighbor in list(self.adjacency[node][&#34;out&#34;]):
         self.adjacency[neighbor][&#34;in&#34;].discard(node)
         if not self.directed:
             self.adjacency[neighbor][&#34;out&#34;].discard(node)
 
-    # 删除节点本身
+
     del self.adjacency[node]</code></pre>
 </details>
 </dd>
